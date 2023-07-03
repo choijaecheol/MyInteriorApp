@@ -1,0 +1,28 @@
+<resources>
+    <!-- App Name -->
+    <string name="app_name">AR Furniture</string>
+
+    <!-- Common Strings -->
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+
+    <!-- Home Screen -->
+    <string name="home_title">AR Furniture App</string>
+    <string name="home_description">Capture a space and explore furniture recommendations!</string>
+    <string name="home_capture">Capture</string>
+
+    <!-- AR Screen -->
+    <string name="ar_title">AR View</string>
+    <string name="ar_loading">Loading AR...</string>
+    <string name="ar_capture">Capture Space</string>
+    <string name="ar_reset">Reset</string>
+
+    <!-- Furniture List Screen -->
+    <string name="furniture_list_title">Furniture Recommendations</string>
+    <string name="furniture_list_empty">No furniture recommendations available.</string>
+
+    <!-- Error Messages -->
+    <string name="error_generic">An error occurred.</string>
+    <string name="error_camera_permission">Camera permission is required to use AR functionality.</string>
+    <string name="error_ar_unsupported">AR is not supported on this device.</string>
+</resources>

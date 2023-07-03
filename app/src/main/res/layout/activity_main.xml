@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    tools:context=".activities.MainActivity">
+
+    <!-- AR 화면 -->
+    <FrameLayout
+        android:id="@+id/arFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/recommendationButton" />
+
+    <!-- AI 추천 버튼 -->
+    <Button
+        android:id="@+id/recommendationButton"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_alignParentTop="true"
+        android:text="AI 추천"
+        android:textSize="18sp" />
+
+    <LinearLayout
+        android:id="@+id/furnitureContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- item_furniture.xml에서 동적으로 추가될 뷰 요소들이 표시될 곳입니다. -->
+
+    </LinearLayout>
+
+</RelativeLayout>
