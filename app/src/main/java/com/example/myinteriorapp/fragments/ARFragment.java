@@ -35,10 +35,13 @@ public class ARFragment extends ArFragment {
     private Uri modelUri;
     private ArSceneView arSceneView;
 
+    public void setModelUri(Uri modelUri) {
+        this.modelUri = modelUri;
+    }
+
     public ARFragment() {
         // 기본 생성자
     }
-
     @Override
     protected Config getSessionConfiguration(Session session) {
         // Create a config object
@@ -59,6 +62,7 @@ public class ARFragment extends ArFragment {
         if (!(context instanceof Activity)) {
             throw new UnsupportedOperationException("ARFragment should be attached to an Activity.");
         }
+
     }
 
     @Nullable

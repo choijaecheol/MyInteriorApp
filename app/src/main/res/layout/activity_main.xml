@@ -7,13 +7,15 @@
     tools:context=".activities.MainActivity">
 
     <!-- AR 화면 -->
-    <FrameLayout
-        android:id="@+id/arFragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/recommendationButton" />
 
     <!-- AI 추천 버튼 -->
+    <FrameLayout
+        android:id="@+id/ar_fragment_container"
+        android:layout_width="357dp"
+        android:layout_height="466dp"
+        android:layout_above="@+id/recommendationButton"
+        android:layout_marginBottom="-466dp" />
+
     <Button
         android:id="@+id/recommendationButton"
         android:layout_width="match_parent"
@@ -21,6 +23,8 @@
         android:layout_alignParentTop="true"
         android:text="AI 추천"
         android:textSize="18sp" />
+
+    <!-- AI 추천 버튼 -->
 
     <LinearLayout
         android:id="@+id/furnitureContainer"
@@ -31,5 +35,17 @@
         <!-- item_furniture.xml에서 동적으로 추가될 뷰 요소들이 표시될 곳입니다. -->
 
     </LinearLayout>
+
+    <Button
+        android:id="@+id/arButton"
+        android:layout_width="248dp"
+        android:layout_height="110dp"
+        android:layout_below="@+id/recommendationButton"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="466dp"
+        android:layout_marginEnd="166dp"
+        android:layout_marginBottom="-408dp"
+        android:text="AR Run"
+        android:textSize="18sp" />
 
 </RelativeLayout>

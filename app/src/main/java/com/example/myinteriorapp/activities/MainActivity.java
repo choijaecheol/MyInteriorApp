@@ -17,6 +17,7 @@ import androidx.core.content.FileProvider;
 
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -27,12 +28,20 @@ import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 
 import com.example.myinteriorapp.R;
+import com.example.myinteriorapp.fragments.ARFragment;
 import com.example.myinteriorapp.models.Furniture;
 import com.example.myinteriorapp.models.ImageData;
 import com.example.myinteriorapp.models.Place;
 import com.example.myinteriorapp.network.ApiClient;
 import com.example.myinteriorapp.network.ApiInterface;
 import com.example.myinteriorapp.network.ApiResponse;
+import com.google.ar.core.Anchor;
+import com.google.ar.core.HitResult;
+import com.google.ar.core.Plane;
+import com.google.ar.core.exceptions.CameraNotAvailableException;
+import com.google.ar.sceneform.AnchorNode;
+import com.google.ar.sceneform.rendering.ModelRenderable;
+import com.google.ar.sceneform.ux.TransformableNode;
 
 import java.io.File;
 import java.io.IOException;
@@ -55,6 +64,8 @@ public class MainActivity extends AppCompatActivity {
 
     private ProgressDialog progressDialog; // 전역 변수로 선언
 
+    private boolean isModelLoaded = false;
+    private ARFragment arFragment;
     private final ActivityResultLauncher<Uri> cameraActivityResultLauncher = registerForActivityResult(
             new ActivityResultContracts.TakePicture(), result -> {
                 if (result) {
@@ -134,6 +145,15 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        if (savedInstanceState == null) {
+            // Replace the FrameLayout container with ARFragment
+            arFragment = new ARFragment(); // ARFragment 인스턴스 생성
+            getSupportFragmentManager().beginTransaction() // ARFragment를 액티비티에 추가
+                    .replace(R.id.ar_fragment_container, arFragment)
+                    .commit();
+        }
+
         // api
         api = ApiClient.getClient().create(ApiInterface.class);
 
@@ -145,6 +165,70 @@ public class MainActivity extends AppCompatActivity {
                 //capturePhoto(); // 변경: capturePhoto() 메소드 호출로 변경
             }
         });
+
+        //ar 버튼 클릭시
+        Button arButton = findViewById(R.id.arButton);
+        arButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // AR 시작 버튼이 클릭되었을 때 동작을 정의합니다.
+                startAR();
+            }
+        });
+
+        arFragment.setOnTapArPlaneListener((HitResult hitResult, Plane plane, MotionEvent motionEvent) -> {
+            if (!isModelLoaded) {
+                addModelToScene(hitResult.createAnchor());
+            }
+        });
+
+    }
+
+    private void addModelToScene(Anchor anchor) {
+        AnchorNode anchorNode = new AnchorNode(anchor);
+        TransformableNode transformableNode = new TransformableNode(arFragment.getTransformationSystem());
+        transformableNode.setParent(anchorNode);
+
+        // 모델을 로드하고 Renderable 객체 생성
+        ModelRenderable.builder()
+                .setSource(this, R.raw.rounded_chair)  // 모델 리소스를 지정
+                .build()
+                .thenAccept(modelRenderable -> {
+                    // 모델 로드가 성공한 경우에만 실행될 콜백
+                    transformableNode.setRenderable(modelRenderable);
+
+                    arFragment.getArSceneView().getScene().addChild(anchorNode);
+                    transformableNode.select();
+                })
+                .exceptionally(throwable -> {
+                    // 모델 로드 실패 시 예외 처리
+                    Toast.makeText(this, "Failed to load model renderable.", Toast.LENGTH_SHORT).show();
+                    Log.e("TAG", "Failed to load model renderable.", throwable);
+                    return null;
+                });
+    }
+
+
+    private void startAR() {
+        // AR 시작 동작을 처리합니다.
+
+        // ARCore와 관련된 코드를 여기에 추가할 수 있습니다.
+        if (arFragment != null) {
+            try {
+                arFragment.getArSceneView().resume();
+                // 모델을 로드하고 표시하는 작업
+                Toast.makeText(this, "AR 시작", Toast.LENGTH_SHORT).show();
+                int modelResourceId = R.raw.rounded_chair;
+                Uri modelUri = Uri.parse("android.resource://" + getPackageName() + "/raw/" + modelResourceId);
+
+                arFragment.setModelUri(modelUri);
+
+            } catch (CameraNotAvailableException e) {
+                // AR 카메라 사용 불가능한 예외 처리
+                Toast.makeText(this, "AR 카메라를 사용할 수 없습니다.", Toast.LENGTH_SHORT).show();
+                e.printStackTrace();
+            }
+        }
     }
 
     private void performAIRecommendation(ImageData imageData) {
